@@ -194,9 +194,6 @@ if __name__ == '__main__':
     x_test = (x_test.astype(np.float32) - 127.5) / 127.5
     # x_test = np.expand_dims(x_test, axis=-1)
 
-    y_train = keras.utils.to_categorical(y_train, num_classes)
-    y_test = keras.utils.to_categorical(y_test, num_classes)
-
     num_train, num_test = x_train.shape[0], x_test.shape[0]
 
     for nrun in range(1, max_runs+1):
@@ -338,9 +335,6 @@ if __name__ == '__main__':
             print(ROW_FMT.format('discriminator (test)',
                                  *test_history['discriminator'][-1]))
 
-            if epoch % 50 != 0:
-                continue
-
             # save weights every epoch
             generator.save_weights(
                 os.path.join(run_path, 'params_generator_epoch_{0:06d}.hdf5'.format(epoch)), True)
@@ -352,17 +346,17 @@ if __name__ == '__main__':
 
             # generate some digits to display
             num_rows = 5
-            noise = np.random.uniform(-1, 1, (num_rows*6, latent_size))
+            noise = np.random.uniform(-1, 1, (num_rows*num_classes, latent_size))
 
             sampled_labels = np.array([
-                [i] * num_rows*3 for i in range(num_classes)
+                [i] * num_rows for i in range(num_classes)
             ]).reshape(-1, 1)
 
             # get a batch to display
             generated_images = generator.predict(
                 [noise, sampled_labels], verbose=0)
 
-            fig,axes = plt.subplots( 6, 5, figsize=[64,64])
+            fig,axes = plt.subplots( 5, num_classes, figsize=[64,64])
             plt.subplots_adjust(wspace=0, hspace=0)
             for i,iax in enumerate(axes.flatten()):
                 iax.imshow((generated_images[i]+1.0)/2.0, interpolation='nearest')
