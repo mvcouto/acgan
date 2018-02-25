@@ -284,7 +284,7 @@ if __name__ == '__main__':
 
             x = np.concatenate((x_test, generated_images))
             y = np.array([1] * num_test + [0] * num_test)
-            aux_y = np.concatenate((y_test, sampled_labels.reshape((-1, 1)), axis=0)
+            aux_y = np.concatenate((y_test, sampled_labels.reshape((-1, 1))), axis=0)
 
             # see if the discriminator can figure itself out...
             discriminator_test_loss = discriminator.evaluate(
